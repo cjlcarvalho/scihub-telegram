@@ -12,6 +12,8 @@
 
 - Installing and using:
 
-    `pip install -r requirements.txt`
+    - `pip install -r requirements.txt`
 
-    `python main.py`
+    - Change TOKEN string in settings.py and put your bot's token there.
+
+    - `python main.py`
