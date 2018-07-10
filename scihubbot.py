@@ -55,7 +55,7 @@ class ScihubBot:
 
     def sendDocument(self, chatId, document):
 
-        sendMessage(chatId, 'Here is your file (' + document.name + '):')
+        self.sendMessage(chatId, 'Here is your file (' + document.name + '):')
 
         r = requests.post(TELEGRAM_API + self.token + '/sendDocument', \
                 data={'chat_id' : chatId}, files={'document' : document})
