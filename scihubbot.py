@@ -55,9 +55,10 @@ class ScihubBot:
 
     def sendDocument(self, chatId, document):
 
+        sendMessage(chatId, 'Here is your file (' + document.name + '):')
+
         r = requests.post(TELEGRAM_API + self.token + '/sendDocument', \
-                data={'chat_id' : chatId, 'text': 'Here is your file (' + document.name + '):'}, \
-                         files={'document' : document})
+                data={'chat_id' : chatId, files={'document' : document})
 
         if not r.json()['ok']:
             raise Exception('[LOG] Service lost. Problem during document upload.')
