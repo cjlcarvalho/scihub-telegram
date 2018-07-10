@@ -1,43 +1,59 @@
-import requests, base64
+import requests, base64, os.path, sys
 from lxml import html
-from settings import TELEGRAM_API, SCIHUB_URL
+from settings import TELEGRAM_API, SCIHUB_URL, LOG_FILE
 
 class ScihubBot:
 
     def __init__(self, token):
         self.token = token
 
-        self.lastUpdate = -1
+        if os.path.isfile('log.txt'):
+
+            try:
+                self.lastUpdate = int(open(LOG_FILE).read().strip())
+            except:
+                self.lastUpdate = -1
+
+        else:
+            self.lastUpdate = -1
 
     def listen(self):
 
-        while True:
+        try:
 
-            r = requests.post(TELEGRAM_API + self.token + '/getUpdates', \
-                              data={'offset' : self.lastUpdate})
+            while True:
 
-            for item in r.json()['result']:
+                r = requests.post(TELEGRAM_API + self.token + '/getUpdates', \
+                                  data={'offset' : self.lastUpdate})
 
-                if 'update_id' in item and 'message' in item:
+                for item in r.json()['result']:
 
-                    if self.lastUpdate < item['update_id']:
+                    if 'update_id' in item and 'message' in item:
 
-                        self.lastUpdate = item['update_id']
+                        if self.lastUpdate < item['update_id']:
 
-                        message = item['message']['text']
+                            self.lastUpdate = item['update_id']
 
-                        if message.strip() == '/help':
+                            message = item['message']['text']
 
-                            self.sendHelp(item['message']['chat']['id'])
+                            if message.strip() == '/help':
 
-                        elif message.startswith('/download '):
+                                self.sendHelp(item['message']['chat']['id'])
 
-                            self.search(item['message']['chat']['id'], message[10:])
+                            elif message.startswith('/download '):
 
-                        else:
+                                self.search(item['message']['chat']['id'], message[10:])
 
-                            self.sendMessage(item['message']['chat']['id'], 'Unknown command.')
+                            else:
 
+                                self.sendMessage(item['message']['chat']['id'], 'Unknown command.')
+
+        except KeyboardInterrupt:
+
+            with open(LOG_FILE, 'w') as f:
+                f.write(str(self.lastUpdate))
+
+            sys.exit()
 
     def sendHelp(self, chatId):
 
