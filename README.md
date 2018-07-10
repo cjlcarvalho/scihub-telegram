@@ -14,6 +14,8 @@
 
     - `pip install -r requirements.txt`
 
-    - Change TOKEN string in settings.py and put your bot's token there.
+    - Change TOKEN string in settings.py and insert your bot's token there.
+
+    - Change SCIHUB_URL string in settings.py and insert Scihub's url.
 
     - `python main.py`
