@@ -1,4 +1,4 @@
-import requests, os.path, sys
+import requests, os.path, sys, json
 from settings import TELEGRAM_API, LOG_FILE
 
 class Telegram:
@@ -9,12 +9,15 @@ class Telegram:
         if os.path.isfile(LOG_FILE):
 
             try:
-                self.lastUpdate = int(open(LOG_FILE).read().strip())
+
+                with open(LOG_FILE) as file:
+                    self.lastUpdate = json.loads(file.read())
+
             except:
-                self.lastUpdate = -1
+                self.lastUpdate = {}
 
         else:
-            self.lastUpdate = -1
+            self.lastUpdate = {}
 
         self.observer = observer
 
@@ -31,9 +34,15 @@ class Telegram:
 
                     if 'update_id' in item and 'message' in item:
 
-                        if self.lastUpdate < item['update_id']:
+                        chatId = str(item['message']['chat']['id'])
 
-                            self.lastUpdate = item['update_id']
+                        if chatId not in self.lastUpdate:
+
+                            self.lastUpdate[chatId] = -1
+
+                        if self.lastUpdate[chatId] < item['update_id']:
+
+                            self.lastUpdate[chatId] = item['update_id']
 
                             message = item['message']
 
@@ -42,7 +51,7 @@ class Telegram:
         except KeyboardInterrupt:
 
             with open(LOG_FILE, 'w') as f:
-                f.write(str(self.lastUpdate))
+                f.write(json.dumps(self.lastUpdate))
 
             sys.exit()
 
