@@ -1,4 +1,4 @@
-from scihubbot import ScihubBot
+from scihubbot.scihubbot import ScihubBot
 
 if __name__ == '__main__':
 

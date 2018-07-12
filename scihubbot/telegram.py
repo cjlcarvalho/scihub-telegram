@@ -1,5 +1,5 @@
 import requests, os.path, sys, json
-from settings import TELEGRAM_API, LOG_FILE
+from .settings import TELEGRAM_API, LOG_FILE
 
 class Telegram:
 

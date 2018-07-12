@@ -1,5 +1,5 @@
 import requests
-from settings import CROSSREF_TITLE_SEARCH
+from .settings import CROSSREF_TITLE_SEARCH
 
 class DOILocator:
 

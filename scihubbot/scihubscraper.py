@@ -1,6 +1,6 @@
 import requests
 from lxml import html
-from settings import SCIHUB_URL
+from .settings import SCIHUB_URL
 
 class ScihubScraper:
 

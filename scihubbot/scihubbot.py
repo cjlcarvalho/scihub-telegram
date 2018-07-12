@@ -1,7 +1,7 @@
-from telegram import Telegram
-from scihubscraper import ScihubScraper
-from doilocator import DOILocator
-from settings import TOKEN
+from .telegram import Telegram
+from .scihubscraper import ScihubScraper
+from .doilocator import DOILocator
+from .settings import TOKEN
 
 helpMessage = 'List of commands:\n\n' + \
               '- download - Inform URL, PMID/DOI or search string.\n' + \
