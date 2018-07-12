@@ -1,6 +1,6 @@
 # scihub-telegram
 
-- Telegram Bot to scrap files from Sci-Hub.
+- Telegram Bot to scrap files from Sci-Hub. Made for study purposes, specially to understand Telegram bot API.
 
 - Requirements:
 
