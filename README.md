@@ -1,8 +1,10 @@
 # scihub-telegram
 
-- Telegram Bot to scrap files from Sci-Hub. Made for study purposes, specially to understand Telegram bot API.
+### Description
 
-- Requirements:
+Telegram Bot to scrap files from Sci-Hub. Made for study purposes, specially to understand Telegram bot API.
+
+### Requirements
 
     * python3
 
@@ -10,7 +12,7 @@
 
     * requests
 
-- Installing and using:
+### Installing and using
 
     - `pip install -r requirements.txt`
 
@@ -18,4 +20,12 @@
 
     - Change SCIHUB_URL string in settings.py and insert Scihub's url.
 
-    - `python main.py`
+    - `python main.py
+    
+### Commands
+
+   - `/byname article-name`
+      - Command to search article by its name and download.
+      
+   - `/download scihub-default-search`
+      - Command to search article by scihub default parameters (i.e. URL, PMID/DOI or search string).
