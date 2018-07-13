@@ -1,4 +1,4 @@
-import requests, os.path, sys, json
+import requests, os.path, json, threading
 from .settings import TELEGRAM_API, LOG_FILE
 
 class Telegram:
@@ -14,6 +14,7 @@ class Telegram:
                     self.lastUpdate = json.loads(file.read())
 
             except:
+                print('[LOG] LAST UPDATE IS EMPTY!')
                 self.lastUpdate = {}
 
         else:
@@ -23,51 +24,47 @@ class Telegram:
 
     def getUpdates(self):
 
-        try:
+        while True:
 
-            while True:
+            r = requests.post(TELEGRAM_API + self.token + '/getUpdates', \
+                    data={'offset' : self.lastUpdate})
 
-                r = requests.post(TELEGRAM_API + self.token + '/getUpdates', \
-                        data={'offset' : self.lastUpdate})
+            for item in r.json()['result']:
 
-                for item in r.json()['result']:
+                if 'update_id' in item and 'message' in item:
 
-                    if 'update_id' in item and 'message' in item:
+                    chatId = str(item['message']['chat']['id'])
 
-                        chatId = str(item['message']['chat']['id'])
+                    if chatId not in self.lastUpdate:
 
-                        if chatId not in self.lastUpdate:
+                        self.lastUpdate[chatId] = -1
 
-                            self.lastUpdate[chatId] = -1
+                    if self.lastUpdate[chatId] < item['update_id']:
 
-                        if self.lastUpdate[chatId] < item['update_id']:
+                        self.lastUpdate[chatId] = item['update_id']
 
-                            self.lastUpdate[chatId] = item['update_id']
+                        with open(LOG_FILE, 'w') as f:
+                            f.write(json.dumps(self.lastUpdate))
 
-                            message = item['message']
+                        message = item['message']
 
-                            self.observer.notify(message)
+                        t = threading.Thread(target=self.observer.notify, args=(message,))
 
-        except KeyboardInterrupt:
+                        t.start()
 
-            with open(LOG_FILE, 'w') as f:
-                f.write(json.dumps(self.lastUpdate))
-
-            sys.exit()
-
-    def sendMessage(self, chatId, message):
+    def sendMessage(self, chatId, origin, message):
 
         r = requests.post(TELEGRAM_API + self.token + '/sendMessage', \
-                data={'chat_id' : chatId, 'text' : message})
+                data={'chat_id' : chatId, 'reply_to_message_id': origin, 'text' : message})
 
         if not r.json()['ok']:
             print('[LOG] Service lost. Problem during message sending.')
             raise Exception('Service lost.')
 
-    def sendDocument(self, chatId, document):
+    def sendDocument(self, chatId, origin, document):
 
         r = requests.post(TELEGRAM_API + self.token + '/sendDocument', \
-                data={'chat_id' : chatId}, files={'document' : document})
+                data={'chat_id' : chatId, 'reply_to_message_id': origin}, files={'document' : document})
 
         if not r.json()['ok']:
             print('[LOG] Service lost. Problem during document sending.')

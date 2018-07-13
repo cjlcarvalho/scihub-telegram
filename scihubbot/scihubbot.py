@@ -29,10 +29,12 @@ class ScihubBot:
 
         chatId = message['chat']['id']
 
+        msgId = message['message_id']
+
         if text.strip() == '/help':
 
             print('[LOG] Help command asked.')
-            self.telegram.sendMessage(chatId, helpMessage)
+            self.telegram.sendMessage(chatId, msgId, helpMessage)
 
         elif text.startswith('/download '):
 
@@ -40,9 +42,9 @@ class ScihubBot:
             doc = self.scihub.searchFile(text[10:])
 
             if doc is None:
-                self.telegram.sendMessage(chatId, 'Couldn\'t find this file! :(')
+                self.telegram.sendMessage(chatId, msgId, 'Couldn\'t find this file! :(')
             else:
-                self.telegram.sendDocument(chatId , doc)
+                self.telegram.sendDocument(chatId, msgId, doc)
 
         elif text.startswith('/byname '):
 
@@ -50,15 +52,15 @@ class ScihubBot:
             doi = self.doilocator.search(text[8:])
 
             if doi is None:
-                self.telegram.sendMessage(chatId, 'Couldn\'t find file DOI. :(')
+                self.telegram.sendMessage(chatId, msgId, 'Couldn\'t find file DOI. :(')
             else:
                 doc = self.scihub.searchFile(doi)
 
                 if doc is None:
-                    self.telegram.sendMessage(chatId, 'Couldn\'t find this file by its DOI! :(')
+                    self.telegram.sendMessage(chatId, msgId, 'Couldn\'t find this file by its DOI! :(')
                 else:
-                    self.telegram.sendDocument(chatId, doc)
+                    self.telegram.sendDocument(chatId, msgId, doc)
 
         else:
             print('[LOG] Unknown command: ' + text)
-            self.telegram.sendMessage(chatId, 'Unknown command!')
+            self.telegram.sendMessage(chatId, msgId, 'Unknown command!')
