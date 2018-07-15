@@ -1,7 +1,9 @@
+import sys
 from .telegram import Telegram
 from .scihubscraper import ScihubScraper
 from .doilocator import DOILocator
 from .settings import TOKEN
+from .exceptions import ScihubUnavailable
 
 helpMessage = 'List of commands:\n\n' + \
               '- download - Inform URL, PMID/DOI or search string.\n' + \
@@ -21,7 +23,21 @@ class ScihubBot:
 
         print('[LOG] Bot started...')
 
-        self.telegram.getUpdates()
+        try:
+
+            self.scihub.connect()
+
+            self.telegram.getUpdates()
+
+        except KeyboardInterrupt:
+
+            print('\n[LOG] Bye.')
+
+            sys.exit()
+
+        except Exception as e:
+
+            print('[LOG] Error occurred. Message: ' + e.message)
 
     def notify(self, message):
 

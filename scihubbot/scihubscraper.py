@@ -9,12 +9,7 @@ class ScihubScraper:
 
         self.scihubUrl = ''
 
-        self._updateScihubUrl()
-
-        if self.scihubUrl == '':
-            raise ScihubUnavailable('Couldn\'t connect with Sci-Hub using urls contained in ' + SCIHUB_URLS_FILE + ' file.')
-
-    def _updateScihubUrl(self):
+    def connect(self):
 
         with open(SCIHUB_URLS_FILE, 'r') as f:
 
@@ -43,7 +38,15 @@ class ScihubScraper:
 
                     print('[LOG] Error during connection establishment with ' + url)
 
+        if self.scihubUrl == '':
+
+            raise ScihubUnavailable('Couldn\'t connect with Sci-Hub using urls contained in ' + SCIHUB_URLS_FILE + ' file.')
+
     def searchFile(self, param):
+
+        if self.scihubUrl == '':
+
+            raise ScihubUnavailable('Couldn\'t connect to Sci-Hub.')
 
         r = requests.get(self.scihubUrl + '/' + param, stream=True)
 
