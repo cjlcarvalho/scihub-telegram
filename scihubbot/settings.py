@@ -1,4 +1,4 @@
-SCIHUB_URLS_FILE = 'scihubbot/scihub-urls.txt'
+SCIHUB_URLS_FILE = 'scihubbot/scihuburls.txt'
 TELEGRAM_API = 'https://api.telegram.org/bot'
 LOG_FILE = 'log.txt'
 CROSSREF_TITLE_SEARCH = 'https://api.crossref.org/works'
