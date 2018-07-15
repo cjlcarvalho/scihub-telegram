@@ -18,7 +18,7 @@ Telegram Bot to scrap files from Sci-Hub. Made for study purposes, specially to 
 
 - Change TOKEN string in settings.py and insert your bot's token there.
 
-- Change SCIHUB_URL string in settings.py and insert Scihub's url.
+- Add more available Sci-Hub URLs in (scihub-urls)[scihubbot/scihub-urls.txt] file.
 
 - `python main.py`
     
