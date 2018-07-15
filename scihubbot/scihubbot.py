@@ -31,7 +31,7 @@ class ScihubBot:
 
         msgId = message['message_id']
 
-        if text.strip() == '/help':
+        if text.strip() == '/help' or text.strip() == '/start':
 
             print('[LOG] Help command asked.')
             self.telegram.sendMessage(chatId, msgId, helpMessage)
@@ -39,7 +39,7 @@ class ScihubBot:
         elif text.startswith('/download '):
 
             print('[LOG] Searching for ' + text[10:])
-            doc = self.scihub.searchFile(text[10:])
+            doc = self.scihub.searchFile(str(text[10:]))
 
             if doc is None:
                 self.telegram.sendMessage(chatId, msgId, 'Couldn\'t find this file! :(')
@@ -63,4 +63,4 @@ class ScihubBot:
 
         else:
             print('[LOG] Unknown command: ' + text)
-            self.telegram.sendMessage(chatId, msgId, 'Unknown command!')
+            self.telegram.sendMessage(chatId, msgId, 'Unknown command! Send /help to know how to download your papers.')
