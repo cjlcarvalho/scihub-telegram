@@ -17,4 +17,4 @@ class Log:
 
             with open(cls.out, 'a') as f:
 
-                f.write(m)
+                f.write(m + '\n')
