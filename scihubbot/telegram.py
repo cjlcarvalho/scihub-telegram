@@ -1,20 +1,21 @@
 import requests, os.path, json, threading
-from .settings import TELEGRAM_API, LOG_FILE
+from .settings import TELEGRAM_API, USERS_LAST_UPDATE
+from .log import Log
 
 class Telegram:
 
     def __init__(self, token, observer):
         self.token = token
 
-        if os.path.isfile(LOG_FILE):
+        if os.path.isfile(USERS_LAST_UPDATE):
 
             try:
 
-                with open(LOG_FILE) as file:
+                with open(USERS_LAST_UPDATE) as file:
                     self.lastUpdate = json.loads(file.read())
 
             except:
-                print('[LOG] LAST UPDATE IS EMPTY!')
+                Log.message('LAST UPDATE IS EMPTY!')
                 self.lastUpdate = {}
 
         else:
@@ -43,7 +44,7 @@ class Telegram:
 
                         self.lastUpdate[chatId] = item['update_id']
 
-                        with open(LOG_FILE, 'w') as f:
+                        with open(USERS_LAST_UPDATE, 'w') as f:
                             f.write(json.dumps(self.lastUpdate))
 
                         message = item['message']
@@ -58,7 +59,7 @@ class Telegram:
                 data={'chat_id' : chatId, 'reply_to_message_id': origin, 'text' : message})
 
         if not r.json()['ok']:
-            print('[LOG] Service lost. Problem during message sending.')
+            Log.message('Service lost. Problem during message sending.')
             raise Exception('Service lost.')
 
     def sendDocument(self, chatId, origin, document):
@@ -67,5 +68,7 @@ class Telegram:
                 data={'chat_id' : chatId, 'reply_to_message_id': origin}, files={'document' : document})
 
         if not r.json()['ok']:
-            print('[LOG] Service lost. Problem during document sending.')
+            Log.message('Service lost. Problem during document sending.')
             raise Exception('Service lost.')
+
+

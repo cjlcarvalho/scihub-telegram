@@ -4,6 +4,7 @@ from .scihubscraper import ScihubScraper
 from .doilocator import DOILocator
 from .settings import TOKEN
 from .exceptions import ScihubUnavailable
+from .log import Log
 
 helpMessage = 'List of commands:\n\n' + \
               '- download - Inform URL, PMID/DOI or search string.\n' + \
@@ -21,7 +22,7 @@ class ScihubBot:
 
     def start(self):
 
-        print('[LOG] Bot started...')
+        Log.message('Bot started...')
 
         try:
 
@@ -31,13 +32,13 @@ class ScihubBot:
 
         except KeyboardInterrupt:
 
-            print('\n[LOG] Bye.')
+            Log.message('Bye.')
 
             sys.exit()
 
         except Exception as e:
 
-            print('[LOG] Error occurred. Message: ' + e.message)
+            Log.message('Error occurred. Message: ' + e.message)
 
     def notify(self, message):
 
@@ -49,12 +50,12 @@ class ScihubBot:
 
         if text.strip() == '/help' or text.strip() == '/start':
 
-            print('[LOG] Help command asked.')
+            Log.message('Help command asked.')
             self.telegram.sendMessage(chatId, msgId, helpMessage)
 
         elif text.startswith('/download '):
 
-            print('[LOG] Searching for ' + text[10:])
+            Log.message('Searching for ' + text[10:])
             doc = self.scihub.searchFile(str(text[10:]))
 
             if doc is None:
@@ -64,7 +65,7 @@ class ScihubBot:
 
         elif text.startswith('/byname '):
 
-            print('[LOG] Searching by name: ' + text[8:])
+            Log.message('Searching by name: ' + text[8:])
             doi = self.doilocator.search(text[8:])
 
             if doi is None:
@@ -78,5 +79,7 @@ class ScihubBot:
                     self.telegram.sendDocument(chatId, msgId, doc)
 
         else:
-            print('[LOG] Unknown command: ' + text)
+            Log.message('Unknown command: ' + text)
             self.telegram.sendMessage(chatId, msgId, 'Unknown command! Send /help to know how to download your papers.')
+
+

@@ -2,6 +2,7 @@ import requests
 from lxml import html
 from .settings import SCIHUB_URLS_FILE
 from .exceptions import ScihubUnavailable
+from .log import Log
 
 class ScihubScraper:
 
@@ -17,7 +18,7 @@ class ScihubScraper:
 
             for url in urls:
 
-                print('[LOG] Trying to connect to ' + url + ' ...')
+                Log.message('Trying to connect to ' + url + ' ...')
 
                 try:
 
@@ -25,18 +26,18 @@ class ScihubScraper:
 
                     if r.status_code != 200:
 
-                        print('[LOG] Couldn\'t connect to ' + url)
+                        Log.message('Couldn\'t connect to ' + url)
 
                     else:
 
-                        print('[LOG] Connected to ' + url)
+                        Log.message('Connected to ' + url)
 
                         self.scihubUrl = url
 
                         break
                 except:
 
-                    print('[LOG] Error during connection establishment with ' + url)
+                    Log.message('Error during connection establishment with ' + url)
 
         if self.scihubUrl == '':
 
@@ -62,7 +63,7 @@ class ScihubScraper:
 
             if link:
 
-                print('[LOG] Trying to download file from ' + link[0])
+                Log.message('Trying to download file from ' + link[0])
 
                 r = requests.get(link[0] if link[0].startswith('http') else 'http:' + link[0], stream=True)
 
@@ -82,3 +83,5 @@ class ScihubScraper:
             for chunk in req.iter_content(chunk_size=1024):
                 if chunk:
                     f.write(chunk)
+
+
