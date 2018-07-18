@@ -6,11 +6,21 @@ from .log import Log
 
 class ScihubScraper:
 
+    """
+        Class to scrap Sci-Hub website.
+    """
+
     def __init__(self):
 
         self.scihubUrl = ''
 
     def connect(self):
+
+        """
+            This method will try to connect with Sci-Hub using the predefined URLs available at SCIHUB_URLS_FILE.
+
+            Raises a ScihubUnavailable exception when it's unable to connect.
+        """
 
         with open(SCIHUB_URLS_FILE, 'r') as f:
 
@@ -45,6 +55,17 @@ class ScihubScraper:
 
     def searchFile(self, param):
 
+        """
+            Search file on Sci-Hub according to the parameter (i.e. DOI, URL or search string).
+
+            Parameters:
+            param (string): Sci-Hub search parameter.
+
+            Returns:
+            file: PDF containing the text of the desired paper. It will return None in the cases where it's not found.
+
+        """
+
         if self.scihubUrl == '':
 
             raise ScihubUnavailable('Couldn\'t connect to Sci-Hub.')
@@ -78,6 +99,16 @@ class ScihubScraper:
         return open(withoutBar + '.pdf', 'rb')
 
     def _downloadDocument(self, req, name):
+
+        """
+            Method to download a document according to its name and request.
+
+            Parameters:
+            req (request): Request made.
+            name (string): The name of the file.
+
+        """
+
 
         with open(name + '.pdf', 'wb') as f:
             for chunk in req.iter_content(chunk_size=1024):

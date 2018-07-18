@@ -4,6 +4,10 @@ from .log import Log
 
 class Telegram:
 
+    """
+        Class to communicate with Telegram API.
+    """
+
     def __init__(self, token, observer):
         self.token = token
 
@@ -24,6 +28,10 @@ class Telegram:
         self.observer = observer
 
     def getUpdates(self):
+
+        """
+            Represents /getUpdates API method.
+        """
 
         while True:
 
@@ -55,14 +63,32 @@ class Telegram:
 
     def sendMessage(self, chatId, origin, message):
 
+        """
+            Represents /sendMessage API method.
+
+            Parameters:
+            chatId (int): Chat ID number.
+            origin (string): The message ID which sent the request.
+            message (string): Message content to send.
+        """
+
         r = requests.post(TELEGRAM_API + self.token + '/sendMessage', \
                 data={'chat_id' : chatId, 'reply_to_message_id': origin, 'text' : message})
 
         if not r.json()['ok']:
             Log.message('Service lost. Problem during message sending.')
-            raise Exception('Service lost.')
+            raise Exception('Service lost.') # TODO: Use custom exception.
 
     def sendDocument(self, chatId, origin, document):
+
+        """
+            Represents /sendDocument API method.
+
+            Parameters:
+            chatId (int): Chat ID number.
+            origin (string): The message ID which sent the request.
+            document (file): File content to send.
+        """
 
         r = requests.post(TELEGRAM_API + self.token + '/sendDocument', \
                 data={'chat_id' : chatId, 'reply_to_message_id': origin}, files={'document' : document})

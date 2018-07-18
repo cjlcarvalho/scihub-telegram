@@ -2,8 +2,21 @@ import requests
 from .settings import CROSSREF_TITLE_SEARCH
 
 class DOILocator:
+    """
+        Helper to search for the paper DOI.
+    """
 
     def search(self, paper):
+
+        """
+            Method to search for the paper DOI.
+
+            Parameters:
+            paper (string): Paper's name.
+
+            Returns:
+            Object: Representing the DOI as string (if found) or None (if not found).
+        """
 
         r = requests.get(CROSSREF_TITLE_SEARCH,
                 params={'query.title' : paper})
