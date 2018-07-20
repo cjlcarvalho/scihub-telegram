@@ -2,8 +2,8 @@ import sys
 from .telegram import Telegram
 from .scihubscraper import ScihubScraper
 from .doilocator import DOILocator
+from .exceptions import ScihubUnavailable, CaptchaError
 from .settings import TOKEN
-from .exceptions import ScihubUnavailable
 from .log import Log
 
 HELPMESSAGE = 'List of commands:\n\n' + \
@@ -43,6 +43,12 @@ class ScihubBot:
 
             sys.exit()
 
+        except ScihubUnavailable:
+
+            Log.message('Sci-Hub Website unavailable.')
+
+            sys.exit()
+
         except Exception as e:
 
             Log.message('Error occurred. Message: ' + e.message)
@@ -73,15 +79,21 @@ class ScihubBot:
 
             Log.message('Searching for ' + text[10:])
 
-            doc = self.scihub.searchFile(str(text[10:]))
+            try:
 
-            if doc is None:
+                doc = self.scihub.searchFile(str(text[10:]))
 
-                self.telegram.sendMessage(chatId, msgId, 'Couldn\'t find this file! :(')
+                if doc is None:
 
-            else:
+                    self.telegram.sendMessage(chatId, msgId, 'Couldn\'t find this file! :(')
 
-                self.telegram.sendDocument(chatId, msgId, doc)
+                else:
+
+                    self.telegram.sendDocument(chatId, msgId, doc)
+
+            except CaptchaError:
+
+                Log.message('Captcha was found.')
 
         elif text.startswith('/byname '):
 
@@ -95,15 +107,21 @@ class ScihubBot:
 
             else:
 
-                doc = self.scihub.searchFile(doi)
+                try:
 
-                if doc is None:
+                    doc = self.scihub.searchFile(doi)
 
-                    self.telegram.sendMessage(chatId, msgId, 'Couldn\'t find this file by its DOI! :(')
+                    if doc is None:
 
-                else:
+                        self.telegram.sendMessage(chatId, msgId, 'Couldn\'t find this file by its DOI! :(')
 
-                    self.telegram.sendDocument(chatId, msgId, doc)
+                    else:
+
+                        self.telegram.sendDocument(chatId, msgId, doc)
+
+                except CaptchaError:
+
+                    Log.message('Captcha was found.')
 
         else:
 

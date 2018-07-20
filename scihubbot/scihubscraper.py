@@ -1,7 +1,7 @@
-import requests
 from lxml import html
+from .requestshelper import RequestsHelper
 from .settings import SCIHUB_URLS_FILE
-from .exceptions import ScihubUnavailable
+from .exceptions import ScihubUnavailable, CaptchaError
 from .log import Log
 
 class ScihubScraper:
@@ -32,9 +32,9 @@ class ScihubScraper:
 
                 try:
 
-                    r = requests.get(url)
+                    r = RequestsHelper.get(url)
 
-                    if r.status_code != 200:
+                    if r['status_code'] != 200:
 
                         Log.message('Couldn\'t connect to ' + url)
 
@@ -51,7 +51,8 @@ class ScihubScraper:
 
         if self.scihubUrl == '':
 
-            raise ScihubUnavailable('Couldn\'t connect with Sci-Hub using urls contained in ' + SCIHUB_URLS_FILE + ' file.')
+            #raise ScihubUnavailable('Couldn\'t connect with Sci-Hub using urls contained in ' + SCIHUB_URLS_FILE + ' file.')
+            raise ScihubUnavailable()
 
     def searchFile(self, param):
 
@@ -70,23 +71,29 @@ class ScihubScraper:
 
             raise ScihubUnavailable('Couldn\'t connect to Sci-Hub.')
 
-        r = requests.get(self.scihubUrl + '/' + param, stream=True)
+        url = self.scihubUrl + '/' + param
 
-        if r.headers['Content-Type'] != 'application/pdf':
+        r = RequestsHelper.get(url, stream=True)
 
-            if not r.content:
+        if r['headers']['Content-Type'] != 'application/pdf':
+
+            if not r['content']:
 
                 return None
 
-            tree = html.fromstring(r.content)
+            tree = html.fromstring(r['content'])
+
+            if tree.xpath('//*[@id="captcha"]'):
+
+                raise CaptchaError()
 
             link = tree.xpath('//*[@id=\'pdf\']/@src')
 
             if link:
 
-                Log.message('Trying to download file from ' + link[0])
+                Log.message('Downloading file from ' + link[0])
 
-                r = requests.get(link[0] if link[0].startswith('http') else 'http:' + link[0], stream=True)
+                url = link[0] if link[0].startswith('http') else 'http:' + link[0]
 
             else:
 
@@ -94,25 +101,7 @@ class ScihubScraper:
 
         withoutBar = param.replace('/', '-')
 
-        self._downloadDocument(r, withoutBar)
+        RequestsHelper.downloadDocument(url, withoutBar + '.pdf')
 
         return open(withoutBar + '.pdf', 'rb')
-
-    def _downloadDocument(self, req, name):
-
-        """
-            Method to download a document according to its name and request.
-
-            Parameters:
-            req (request): Request made.
-            name (string): The name of the file.
-
-        """
-
-
-        with open(name + '.pdf', 'wb') as f:
-            for chunk in req.iter_content(chunk_size=1024):
-                if chunk:
-                    f.write(chunk)
-
 

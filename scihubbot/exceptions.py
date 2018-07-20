@@ -6,3 +6,8 @@ class ScihubUnavailable(Exception):
     """
 
     pass
+
+class CaptchaError(Exception):
+
+    pass
+

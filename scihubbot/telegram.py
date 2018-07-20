@@ -1,4 +1,5 @@
-import requests, os.path, json, threading
+import os.path, json, threading
+from .requestshelper import RequestsHelper
 from .settings import TELEGRAM_API, USERS_LAST_UPDATE
 from .log import Log
 
@@ -35,10 +36,10 @@ class Telegram:
 
         while True:
 
-            r = requests.post(TELEGRAM_API + self.token + '/getUpdates', \
+            r = RequestsHelper.post(TELEGRAM_API + self.token + '/getUpdates', \
                     data={'offset' : self.lastUpdate})
 
-            for item in r.json()['result']:
+            for item in r['result']:
 
                 if 'update_id' in item and 'message' in item:
 
@@ -72,10 +73,10 @@ class Telegram:
             message (string): Message content to send.
         """
 
-        r = requests.post(TELEGRAM_API + self.token + '/sendMessage', \
+        r = RequestsHelper.post(TELEGRAM_API + self.token + '/sendMessage', \
                 data={'chat_id' : chatId, 'reply_to_message_id': origin, 'text' : message})
 
-        if not r.json()['ok']:
+        if not r['ok']:
             Log.message('Service lost. Problem during message sending.')
             raise Exception('Service lost.') # TODO: Use custom exception.
 
@@ -90,10 +91,10 @@ class Telegram:
             document (file): File content to send.
         """
 
-        r = requests.post(TELEGRAM_API + self.token + '/sendDocument', \
+        r = RequestsHelper.post(TELEGRAM_API + self.token + '/sendDocument', \
                 data={'chat_id' : chatId, 'reply_to_message_id': origin}, files={'document' : document})
 
-        if not r.json()['ok']:
+        if not r['ok']:
             Log.message('Service lost. Problem during document sending.')
             raise Exception('Service lost.')
 
