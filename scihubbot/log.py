@@ -2,7 +2,7 @@
 class Log:
 
     """
-        Log class. It contains the log mode (stdout/file) and the output file (if it is by file mode).
+    Log class. It contains the log mode (stdout/file) and the output file (if it is by file mode).
     """
 
     mode = 'stdout'
@@ -12,9 +12,9 @@ class Log:
     def message(cls, msg):
 
         """
-            Static method to Log a message.
+        Static method to Log a message.
 
-            Parameters:
+        Parameters:
             msg (string): Message content.
         """
 
@@ -29,3 +29,4 @@ class Log:
             with open(cls.out, 'a') as f:
 
                 f.write(m + '\n')
+
