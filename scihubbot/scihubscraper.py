@@ -7,7 +7,7 @@ from .log import Log
 class ScihubScraper:
 
     """
-        Class to scrap Sci-Hub website.
+    Class to scrap Sci-Hub website.
     """
 
     def __init__(self):
@@ -17,9 +17,9 @@ class ScihubScraper:
     def connect(self):
 
         """
-            This method will try to connect with Sci-Hub using the predefined URLs available at SCIHUB_URLS_FILE.
+        This method will try to connect with Sci-Hub using the predefined URLs available at SCIHUB_URLS_FILE.
 
-            Raises a ScihubUnavailable exception when it's unable to connect.
+        Raises a ScihubUnavailable exception when it's unable to connect.
         """
 
         with open(SCIHUB_URLS_FILE, 'r') as f:
@@ -57,12 +57,12 @@ class ScihubScraper:
     def searchFile(self, param):
 
         """
-            Search file on Sci-Hub according to the parameter (i.e. DOI, URL or search string).
+        Search file on Sci-Hub according to the parameter (i.e. DOI, URL or search string).
 
-            Parameters:
+        Parameters:
             param (string): Sci-Hub search parameter.
 
-            Returns:
+        Returns:
             file: PDF containing the text of the desired paper. It will return None in the cases where it's not found.
 
         """
@@ -101,7 +101,13 @@ class ScihubScraper:
 
         withoutBar = param.replace('/', '-')
 
-        RequestsHelper.downloadDocument(url, withoutBar + '.pdf')
+        try:
+
+            RequestsHelper.downloadDocument(url, withoutBar + '.pdf')
+
+        except DownloadError:
+
+            Log.message('Short file. It is possible that you got some error while downloading.')
 
         return open(withoutBar + '.pdf', 'rb')
 

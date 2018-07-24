@@ -12,7 +12,7 @@ HELPMESSAGE = 'List of commands:\n\n' + \
 
 class ScihubBot:
     """
-        Sci-Hub bot class.
+    Sci-Hub bot class.
     """
 
     def __init__(self):
@@ -26,7 +26,7 @@ class ScihubBot:
     def start(self):
 
         """
-            Method to start your bot.
+        Method to start your bot.
         """
 
         Log.message('Bot started...')
@@ -56,10 +56,10 @@ class ScihubBot:
     def notify(self, message):
 
         """
-            Notify method.
-            It should be called by the bot's subject, informing the message.
+        Notify method.
+        It should be called by the bot's subject, informing the message.
 
-            Parameters:
+        Parameters:
             message (dict): Dictionary containing the message information.
         """
 

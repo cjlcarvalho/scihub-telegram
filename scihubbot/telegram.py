@@ -6,10 +6,19 @@ from .log import Log
 class Telegram:
 
     """
-        Class to communicate with Telegram API.
+    Class to communicate with Telegram API.
     """
 
     def __init__(self, token, observer):
+
+        """
+        Constructor
+
+        Parameters:
+            token (string): Telegram API token
+            observer (string): Observer object that will process the API response.
+        """
+
         self.token = token
 
         if os.path.isfile(USERS_LAST_UPDATE):
@@ -31,7 +40,7 @@ class Telegram:
     def getUpdates(self):
 
         """
-            Represents /getUpdates API method.
+        Represents /getUpdates API method.
         """
 
         while True:
@@ -65,9 +74,9 @@ class Telegram:
     def sendMessage(self, chatId, origin, message):
 
         """
-            Represents /sendMessage API method.
+        Represents /sendMessage API method.
 
-            Parameters:
+        Parameters:
             chatId (int): Chat ID number.
             origin (string): The message ID which sent the request.
             message (string): Message content to send.
@@ -83,9 +92,9 @@ class Telegram:
     def sendDocument(self, chatId, origin, document):
 
         """
-            Represents /sendDocument API method.
+        Represents /sendDocument API method.
 
-            Parameters:
+        Parameters:
             chatId (int): Chat ID number.
             origin (string): The message ID which sent the request.
             document (file): File content to send.

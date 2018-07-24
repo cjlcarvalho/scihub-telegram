@@ -3,18 +3,18 @@ from .settings import CROSSREF_TITLE_SEARCH
 
 class DOILocator:
     """
-        Helper to search for the paper DOI.
+    Helper to search for the paper DOI.
     """
 
     def search(self, paper):
 
         """
-            Method to search for the paper DOI.
+        Method to search for the paper DOI.
 
-            Parameters:
+        Parameters:
             paper (string): Paper's name.
 
-            Returns:
+        Returns:
             Object: Representing the DOI as string (if found) or None (if not found).
         """
 
