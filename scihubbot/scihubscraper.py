@@ -1,6 +1,6 @@
 from lxml import html
 from .requestshelper import RequestsHelper
-from .settings import SCIHUB_URLS_FILE
+from .settings import URLS
 from .exceptions import ScihubUnavailable, CaptchaError
 from .log import Log
 
@@ -17,41 +17,35 @@ class ScihubScraper:
     def connect(self):
 
         """
-        This method will try to connect with Sci-Hub using the predefined URLs available at SCIHUB_URLS_FILE.
+        This method will try to connect with Sci-Hub using the predefined URLs.
 
         Raises a ScihubUnavailable exception when it's unable to connect.
         """
 
-        with open(SCIHUB_URLS_FILE, 'r') as f:
+        for url in URLS:
 
-            urls = map(lambda x: x[:-1] , f.readlines())
+            Log.message('Trying to connect to ' + url + ' ...')
 
-            for url in urls:
+            try:
 
-                Log.message('Trying to connect to ' + url + ' ...')
+                r = RequestsHelper.get(url)
 
-                try:
+                if r['status_code'] != 200:
 
-                    r = RequestsHelper.get(url)
+                    Log.message('Couldn\'t connect to ' + url)
 
-                    if r['status_code'] != 200:
+                else:
 
-                        Log.message('Couldn\'t connect to ' + url)
+                    Log.message('Connected to ' + url)
 
-                    else:
+                    self.scihubUrl = url
 
-                        Log.message('Connected to ' + url)
+            except:
 
-                        self.scihubUrl = url
-
-                        break
-                except:
-
-                    Log.message('Error during connection establishment with ' + url)
+                Log.message('Error during connection establishment with ' + url)
 
         if self.scihubUrl == '':
 
-            #raise ScihubUnavailable('Couldn\'t connect with Sci-Hub using urls contained in ' + SCIHUB_URLS_FILE + ' file.')
             raise ScihubUnavailable()
 
     def searchFile(self, param):
