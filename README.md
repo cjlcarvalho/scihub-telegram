@@ -24,6 +24,12 @@ Telegram Bot to scrap files from Sci-Hub. Made for study purposes, specially to 
     
 ### Commands
 
+- `/help`
+    - Command to show help message.
+
+- `/start`
+    - Does the same as help command for a while.
+
 - `/byname article-name`
     - Command to search article by its name and download.
       
