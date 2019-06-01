@@ -22,7 +22,7 @@ Telegram Bot to scrap files from Sci-Hub. Made for study purposes, specially to 
 
 - `python main.py`
     
-### Commands
+### Telegram Commands
 
 - `/help`
     - Command to show help message.
